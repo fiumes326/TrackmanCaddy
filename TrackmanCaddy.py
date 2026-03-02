@@ -11,6 +11,8 @@ class TrackmanCaddy:
 
         self.watch_thread_object = None
 
+        self.speech_engine = pyttsx3.init()
+
     def set_hotkeys():
         keyboard.add_hotkey("r", nudge_right, surpress=True)
         keyboard.add_hotkey("shift+r", aim_right, surpress=True)
@@ -30,6 +32,7 @@ class TrackmanCaddy:
         self.total_clicks += 1
 
     def nudge_right(self):
+        print("Nudging Right...")
         screen_width, screen_height = pyautogui.size()
         center_x = screen_width // 2
         center_y = screen_height // 2
@@ -43,6 +46,7 @@ class TrackmanCaddy:
         self.total_clicks += 1
 
     def nudge_left(self):
+        print("Nudging Left...")
         screen_width, screen_height = pyautogui.size()
         center_x = screen_width // 2
         center_y = screen_height // 2
@@ -57,6 +61,7 @@ class TrackmanCaddy:
 
 
     def aim_right(self):
+        print("Aiming Right...")
         screen_width, screen_height = pyautogui.size()
         center_x = screen_width // 2
         center_y = screen_height // 2
@@ -70,6 +75,7 @@ class TrackmanCaddy:
         self.total_clicks += 1
 
     def aim_left(self):
+        print("Aiming Left...")
         screen_width, screen_height = pyautogui.size()
         center_x = screen_width // 2
         center_y = screen_height // 2
@@ -89,29 +95,32 @@ class TrackmanCaddy:
 
     def calculate_yardage():
         ground_yardage = 0
-
+        calculated_yardage = ground_yardage
         elavation = 0
         x_wind = 0
         y_wind = 0
        
-       #tailwind
+        #tailwind
         if y_wind > 0:
             affected_yards = y_wind * .5
-            ground_yardage -= affected_yards
+            calculated_yardage -= affected_yards
        
-       #tailwind
+        #tailwind
         else if y_wind < 0:
-            ground_yardage += y_wind
-
-
-
-    def next_hole():
-        pass
+            calculated_yardage += y_wind
+        
+        #add elavation
+        calculated_yardage += elavation
+        
+        output = [f"{ground_yardage} yards playing {calculated_yardage}"]
+        self.speek(output)
+        
     
     def watch_loop(self):
         while True:
             self.next_shot()
             time.sleep(.2)
+    
 
     def start_wacther_thread(self):
         self.wacth_thread_object = threading.Thread(target=self.watch_loop, daemon = True)
@@ -120,7 +129,12 @@ class TrackmanCaddy:
     def stop_watcher_thread(self):
         self.watch_thread_object.stop()
 
+    def speek(self, text: list[str]):
+        for phrase in text:
+            self.speech_engine.say(phrase)
 
+        self.speech_engine.runAndWait()
+        
     def shutdown(self):
         keyboard.unhook_all()
         self.stop_watcher_thread()
