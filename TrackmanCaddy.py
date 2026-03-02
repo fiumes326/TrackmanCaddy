@@ -6,6 +6,16 @@ class TrackmanCaddy:
         self.total_clicks = 0
         self.confidence = .85
 
+    def set_hotkeys():
+        keyboard.add_hotkey("r", nudge_right, surpress=True)
+        keyboard.add_hotkey("shift+r", aim_right, surpress=True)
+
+        keyboard.add_hotkey("l", nudge_left, surpress=True)
+        keyboard.add_hotkey("shift+l", aim_left, surpress=True)
+
+        keyboard.add_hotkey("m", take_mulligan, surpress=True)
+        
+
     def next_shot(self):
         location = pyautogui.locateOnsScreen("next_shot.png", confidence = self.confidence)
         center = pyautogui.center(location)
@@ -61,7 +71,8 @@ class TrackmanCaddy:
 
         pyautogui.click(left_center_x, left_center_y)
 
-
+    def take_mulligan(self): 
+        pass
 
     def next_hole():
         pass
