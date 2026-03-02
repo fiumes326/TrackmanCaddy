@@ -1,4 +1,5 @@
 import pyautogui
+import keyboard
 
 class TrackmanCaddy:
     def __init__(self):
@@ -34,7 +35,6 @@ class TrackmanCaddy:
         left_center_y = center_y
 
         pyautogui.click(left_center_x, left_center_y)
-
 
 
     def aim_right(self):
