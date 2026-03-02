@@ -27,6 +27,7 @@ class TrackmanCaddy:
         location = pyautogui.locateOnScreen("../images/next_shot.png", confidence = self.confidence)
         if not location:
             return
+        print("Heading to next shot...")
         center = pyautogui.center(location)
         pyautogui.click(center)
         self.total_clicks += 1
@@ -88,7 +89,8 @@ class TrackmanCaddy:
         pyautogui.click(left_center_x, left_center_y)
         total_clicks += 1
 
-    def take_mulligan(self): 
+    def take_mulligan(self):
+        print("Taking A mulligan...")
         location = pyautogui.locateOnScreen("../images/mulligan.png", confidence = self.confidence)
         if not location:
             return
@@ -114,6 +116,7 @@ class TrackmanCaddy:
         
         output = [f"{ground_yardage} yards playing {calculated_yardage}"]
         self.speek(output)
+        print(f"{ouput[0]}\n")
         
     
     def watch_loop(self):
