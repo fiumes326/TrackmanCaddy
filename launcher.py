@@ -1,14 +1,19 @@
-import TrackmanCaddy from TrackmanCaddy as caddy
-
+from TrackmanCaddy import TrackmanCaddy as caddy
+import time
 
 try:
+    print("Grabbing you a caddy...\n")
     myCaddy = caddy()
-    print("Caddy is ready, play away!")
+    myCaddy.set_hotkeys()
+    myCaddy.start_watcher_thread()
+    print("Caddy is ready, play away!\n")
 
     while True:
+        time.sleep(1)
 
 except KeybaodInterrupt:
     print("Tipping caddy and shutting down...")
 
 finally:
-    caddy.shutdown()
+    myCaddy.shutdown()
+    print("Bye!")

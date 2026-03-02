@@ -2,6 +2,7 @@ import pyautogui
 import keyboard
 import threading
 import time
+import pyttsx3
 
 class TrackmanCaddy:
     def __init__(self):
@@ -21,7 +22,7 @@ class TrackmanCaddy:
         
 
     def next_shot(self):
-        location = pyautogui.locateOnScreen("next_shot.png", confidence = self.confidence)
+        location = pyautogui.locateOnScreen("../images/next_shot.png", confidence = self.confidence)
         if not location:
             return
         center = pyautogui.center(location)
@@ -39,6 +40,7 @@ class TrackmanCaddy:
         right_center_y = center_y
 
         pyautogui.click(right_quater_x, right_center_y)
+        self.total_clicks += 1
 
     def nudge_left(self):
         screen_width, screen_height = pyautogui.size()
@@ -51,6 +53,7 @@ class TrackmanCaddy:
         left_center_y = center_y
 
         pyautogui.click(left_center_x, left_center_y)
+        self.total_clicks += 1
 
 
     def aim_right(self):
@@ -64,6 +67,7 @@ class TrackmanCaddy:
         right_center_y = center_y
 
         pyautogui.click(right_center_x, right_center_y)
+        self.total_clicks += 1
 
     def aim_left(self):
         screen_width, screen_height = pyautogui.size()
@@ -76,21 +80,42 @@ class TrackmanCaddy:
         left_center_y = center_y
 
         pyautogui.click(left_center_x, left_center_y)
+        total_clicks += 1
 
     def take_mulligan(self): 
-        pass
+        location = pyautogui.locateOnScreen("../images/mulligan.png", confidence = self.confidence)
+        if not location:
+            return
+
+    def calculate_yardage():
+        ground_yardage = 0
+
+        elavation = 0
+        x_wind = 0
+        y_wind = 0
+       
+       #tailwind
+        if y_wind > 0:
+            affected_yards = y_wind * .5
+            ground_yardage -= affected_yards
+       
+       #tailwind
+        else if y_wind < 0:
+            ground_yardage += y_wind
+
+
 
     def next_hole():
         pass
     
-    def wacth_loop(self):
+    def watch_loop(self):
         while True:
             self.next_shot()
             time.sleep(.2)
 
     def start_wacther_thread(self):
-            self.wacth_thread_object = threading.Thread(target=self.wacth_loop, daemon = True)
-            self.wacth_thread_object.start()
+        self.wacth_thread_object = threading.Thread(target=self.watch_loop, daemon = True)
+        self.wacth_thread_object.start()
     
     def stop_watcher_thread(self):
         self.watch_thread_object.stop()
