@@ -1,10 +1,14 @@
 import pyautogui
 import keyboard
+import threading
+import time
 
 class TrackmanCaddy:
     def __init__(self):
         self.total_clicks = 0
         self.confidence = .85
+
+        self.watch_thread_object = None
 
     def set_hotkeys():
         keyboard.add_hotkey("r", nudge_right, surpress=True)
@@ -17,14 +21,16 @@ class TrackmanCaddy:
         
 
     def next_shot(self):
-        location = pyautogui.locateOnsScreen("next_shot.png", confidence = self.confidence)
+        location = pyautogui.locateOnScreen("next_shot.png", confidence = self.confidence)
+        if not location:
+            return
         center = pyautogui.center(location)
         pyautogui.click(center)
         self.total_clicks += 1
 
     def nudge_right(self):
         screen_width, screen_height = pyautogui.size()
-        center_x = screen width // 2
+        center_x = screen_width // 2
         center_y = screen_height // 2
         
         right_edge_x = screen_width - 1
@@ -36,7 +42,7 @@ class TrackmanCaddy:
 
     def nudge_left(self):
         screen_width, screen_height = pyautogui.size()
-        center_x = screen width // 2
+        center_x = screen_width // 2
         center_y = screen_height // 2
         
         left_edge_x = 0
@@ -49,7 +55,7 @@ class TrackmanCaddy:
 
     def aim_right(self):
         screen_width, screen_height = pyautogui.size()
-        center_x = screen width // 2
+        center_x = screen_width // 2
         center_y = screen_height // 2
         
         right_edge_x = screen_width - 1
@@ -61,7 +67,7 @@ class TrackmanCaddy:
 
     def aim_left(self):
         screen_width, screen_height = pyautogui.size()
-        center_x = screen width // 2
+        center_x = screen_width // 2
         center_y = screen_height // 2
         
         left_edge_x = 0
@@ -76,4 +82,22 @@ class TrackmanCaddy:
 
     def next_hole():
         pass
+    
+    def wacth_loop(self):
+        while True:
+            self.next_shot()
+            time.sleep(.2)
+
+    def start_wacther_thread(self):
+            self.wacth_thread_object = threading.Thread(target=self.wacth_loop, daemon = True)
+            self.wacth_thread_object.start()
+    
+    def stop_watcher_thread(self):
+        self.watch_thread_object.stop()
+
+
+    def shutdown(self):
+        keyboard.unhook_all()
+        self.stop_watcher_thread()
+
 
