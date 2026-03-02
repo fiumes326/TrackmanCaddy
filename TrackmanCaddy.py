@@ -95,13 +95,18 @@ class TrackmanCaddy:
         if not location:
             return
 
-    def calculate_yardage():
+    def get_shot_info():
         ground_yardage = 0
         calculated_yardage = ground_yardage
         elavation = 0
         x_wind = 0
         y_wind = 0
-       
+
+        return (ground_yardage, calculated_yardage, elevation, x_wind, y_wind)           
+
+    def calculate_yardage(self):
+       ground_yardage, calculated_yardage, elevation, x_wind, y_wind = self.get_shot_info() 
+
         #tailwind
         if y_wind > 0:
             affected_yards = y_wind * .5
