@@ -3,7 +3,7 @@ name = "trackmancaddy"
 version = "0.1.0"
 description = "Lightweight Python software to help speed and flow of using Trackman Software"
 authors = [
-    {name = "Frank Fiumefreddo",email = ""}
+    {name = "Frank Fiumefreddo",email = "fiumes326@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.9"
