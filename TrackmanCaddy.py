@@ -13,18 +13,18 @@ class TrackmanCaddy:
 
         self.speech_engine = pyttsx3.init()
 
-    def set_hotkeys():
-        keyboard.add_hotkey("r", nudge_right, surpress=True)
-        keyboard.add_hotkey("shift+r", aim_right, surpress=True)
+    def set_hotkeys(self):
+        keyboard.add_hotkey("r", self.nudge_right, suppress=True)
+        keyboard.add_hotkey("shift+r", self.aim_right, suppress=True)
 
-        keyboard.add_hotkey("l", nudge_left, surpress=True)
-        keyboard.add_hotkey("shift+l", aim_left, surpress=True)
+        keyboard.add_hotkey("l", self.nudge_left, suppress=True)
+        keyboard.add_hotkey("shift+l", self.aim_left, suppress=True)
 
-        keyboard.add_hotkey("m", take_mulligan, surpress=True)
+        keyboard.add_hotkey("m", self.take_mulligan, suppress=True)
         
 
     def next_shot(self):
-        location = pyautogui.locateOnScreen("../images/next_shot.png", confidence = self.confidence)
+        location = pyautogui.locateOnScreen("../images/next.jpeg", confidence = self.confidence)
         if not location:
             return
         print("Heading to next shot...")
@@ -57,7 +57,7 @@ class TrackmanCaddy:
         left_quater_x = (center_x + left_edge_x) // 4
         left_center_y = center_y
 
-        pyautogui.click(left_center_x, left_center_y)
+        pyautogui.click(left_quater_x, left_center_y)
         self.total_clicks += 1
 
 
@@ -87,7 +87,7 @@ class TrackmanCaddy:
         left_center_y = center_y
 
         pyautogui.click(left_center_x, left_center_y)
-        total_clicks += 1
+        self.total_clicks += 1
 
     def take_mulligan(self):
         print("Taking A mulligan...")
@@ -95,33 +95,34 @@ class TrackmanCaddy:
         if not location:
             return
 
-    def get_shot_info():
+    def get_shot_info(self):
         ground_yardage = 0
         calculated_yardage = ground_yardage
-        elavation = 0
+        elevation = 0
         x_wind = 0
         y_wind = 0
 
         return (ground_yardage, calculated_yardage, elevation, x_wind, y_wind)           
 
     def calculate_yardage(self):
-       ground_yardage, calculated_yardage, elevation, x_wind, y_wind = self.get_shot_info() 
+        ground_yardage, calculated_yardage, elevation, x_wind, y_wind = self.get_shot_info() 
 
         #tailwind
         if y_wind > 0:
             affected_yards = y_wind * .5
             calculated_yardage -= affected_yards
-       
-        #tailwind
-        else if y_wind < 0:
-            calculated_yardage += y_wind
         
-        #add elavation
-        calculated_yardage += elavation
+        #headwind
+        elif y_wind < 0:
+            affected_yards = y_wind 
+            calculated_yardage -= affected_yards
+        
+        #add elevation
+        calculated_yardage += elevation
         
         output = [f"{ground_yardage} yards playing {calculated_yardage}"]
         self.speek(output)
-        print(f"{ouput[0]}\n")
+        print(f"{output[0]}\n")
         
     
     def watch_loop(self):
@@ -146,5 +147,6 @@ class TrackmanCaddy:
     def shutdown(self):
         keyboard.unhook_all()
         self.stop_watcher_thread()
+        print(f"Total Clicks: {self.total_clicks}")
 
 
