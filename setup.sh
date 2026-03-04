@@ -17,6 +17,7 @@ if ! command -v poetry &> /dev/null; then
 fi
 
 #install dependencies using poetry
+poetry config virtualenvs.create false --local
 poetry install
 
 # Put script in local bin 
