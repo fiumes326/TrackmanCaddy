@@ -108,15 +108,15 @@ class TrackmanCaddy:
     def calculate_yardage(self):
         ground_yardage, calculated_yardage, elevation, x_wind, y_wind = self.get_shot_info() 
 
-        #tailwind
+        #helping wind
         if y_wind > 0:
             affected_yards = y_wind * .5
-            calculated_yardage -= affected_yards
+            calculated_yardage += affected_yards
         
-        #headwind
+        #hurting wind
         elif y_wind < 0:
             affected_yards = y_wind 
-            calculated_yardage -= affected_yards
+            calculated_yardage += affected_yards
         
         #add elevation
         calculated_yardage += elevation
