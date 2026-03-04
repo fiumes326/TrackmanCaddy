@@ -1,34 +1,51 @@
 #!/usr/bin/env python3
 
+import os
 import pyautogui
-import keyboard
+from pynput import keyboard
 import threading
 import time
 import pyttsx3
 
+IMAGES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
+
 class TrackmanCaddy:
     def __init__(self):
         self.total_clicks = 0
-        self.confidence = .85
+        self.confidence = .80
 
         self.watch_thread_object = None
         self.stop_watcher_event = threading.Event()
 
         self.speech_engine = pyttsx3.init()
+        self.keyboard_listener = None
+
+    def _on_press(self, key):
+        try:
+            char = key.char
+        except AttributeError:
+            return
+
+        if char == 'R':
+            self.aim_right()
+        elif char == 'r':
+            self.nudge_right()
+        elif char == 'L':
+            self.aim_left()
+        elif char == 'l':
+            self.nudge_left()
+        elif char == 'm':
+            self.take_mulligan()
 
     def set_hotkeys(self):
-        keyboard.add_hotkey("r", self.nudge_right, suppress=True)
-        keyboard.add_hotkey("shift+r", self.aim_right, suppress=True)
-
-        keyboard.add_hotkey("l", self.nudge_left, suppress=True)
-        keyboard.add_hotkey("shift+l", self.aim_left, suppress=True)
-
-        keyboard.add_hotkey("m", self.take_mulligan, suppress=True)
+        self.keyboard_listener = keyboard.Listener(on_press=self._on_press)
+        self.keyboard_listener.start()
         
 
     def next_shot(self):
-        location = pyautogui.locateOnScreen("../images/next.jpeg", confidence = self.confidence)
-        if not location:
+        try:
+            location = pyautogui.locateOnScreen(os.path.join(IMAGES_DIR, "next.png"), confidence = self.confidence)
+        except pyautogui.ImageNotFoundException:
             return
         print("Heading to next shot...")
         center = pyautogui.center(location)
@@ -94,8 +111,9 @@ class TrackmanCaddy:
 
     def take_mulligan(self):
         print("Taking A mulligan...")
-        location = pyautogui.locateOnScreen("../images/mulligan.png", confidence = self.confidence)
-        if not location:
+        try:
+            location = pyautogui.locateOnScreen(os.path.join(IMAGES_DIR, "mulligan.png"), confidence = self.confidence)
+        except pyautogui.ImageNotFoundException:
             return
 
     def get_shot_info(self):
@@ -130,7 +148,11 @@ class TrackmanCaddy:
     
     def watch_loop(self):
         while not self.stop_watcher_event.is_set():
-            self.next_shot()
+            try:
+                self.next_shot()
+            except Exception:
+                if self.stop_watcher_event.is_set():
+                    break
             time.sleep(.2)
     
 
@@ -157,7 +179,8 @@ class TrackmanCaddy:
         self.speech_engine.runAndWait()
         
     def shutdown(self):
-        keyboard.unhook_all()
+        if self.keyboard_listener:
+            self.keyboard_listener.stop()
         self.stop_watcher_thread()
         print(f"Total Clicks: {self.total_clicks}")
 
