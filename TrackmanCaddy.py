@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pyautogui
 import keyboard
 import threading
