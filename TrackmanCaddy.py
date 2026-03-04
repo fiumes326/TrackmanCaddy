@@ -10,6 +10,7 @@ class TrackmanCaddy:
         self.confidence = .85
 
         self.watch_thread_object = None
+        self.stop_watcher_event = threading.Event()
 
         self.speech_engine = pyttsx3.init()
 
@@ -126,17 +127,26 @@ class TrackmanCaddy:
         
     
     def watch_loop(self):
-        while True:
+        while not self.stop_watcher_event.is_set():
             self.next_shot()
             time.sleep(.2)
     
 
-    def start_wacther_thread(self):
-        self.wacth_thread_object = threading.Thread(target=self.watch_loop, daemon = True)
-        self.wacth_thread_object.start()
+    def start_watcher_thread(self):
+        if self.watch_thread_object and self.watch_thread_object.is_alive():
+            return
+
+        self.stop_watcher_event.clear()
+        self.watch_thread_object = threading.Thread(target=self.watch_loop, daemon=True)
+        self.watch_thread_object.start()
     
     def stop_watcher_thread(self):
-        self.watch_thread_object.stop()
+        if not self.watch_thread_object:
+            return
+
+        self.stop_watcher_event.set()
+        self.watch_thread_object.join(timeout=1)
+        self.watch_thread_object = None
 
     def speek(self, text: list[str]):
         for phrase in text:

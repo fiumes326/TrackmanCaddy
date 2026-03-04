@@ -11,7 +11,7 @@ try:
     while True:
         time.sleep(1)
 
-except KeybaodInterrupt:
+except KeyboardInterrupt:
     print("Tipping caddy and shutting down...")
 
 finally:
